@@ -1,0 +1,81 @@
+class MyHashMap {
+    private var base: Int
+    private var buckets: [Bucket]
+
+    init() {
+        base = 3612
+        buckets = []
+        for _ in 0 ..< base {
+            buckets.append(Bucket())
+        }
+    }
+    
+    func put(_ key: Int, _ value: Int) {
+        buckets[hash(key)].put(key, value)
+    }
+    
+    func get(_ key: Int) -> Int {
+        buckets[hash(key)].get(key)
+    }
+    
+    func remove(_ key: Int) {
+        buckets[hash(key)].remove(key)
+    }
+
+    private func hash(_ key: Int) -> Int {
+        key % base
+    }
+
+    class Bucket {
+        private let head = Pair(-1, -1)
+
+        func put(_ key: Int, _ value: Int) {
+            var next = head.next
+            while next != nil {
+                if next?.key == key {
+                    next?.value = value
+                    return
+                }
+                next = next?.next
+            }
+            let pair = Pair(key, value)
+            pair.next = head.next
+            head.next = pair
+        }
+
+        func get(_ key: Int) -> Int {
+            var next = head.next
+            while next != nil {
+                if next?.key == key {
+                    return next!.value
+                }
+                next = next?.next
+            }
+            return -1
+        }
+
+        func remove(_ key: Int) {
+            var pre: Pair? = head
+            var next = head.next
+            while next != nil {
+                if next?.key == key {
+                    pre?.next = next?.next
+                    return
+                }
+                pre = next
+                next = next?.next
+            }
+        }
+
+        class Pair {
+            let key: Int
+            var value: Int
+            var next: Pair?
+
+            init(_ key: Int, _ value: Int) {
+                self.key = key
+                self.value = value
+            }
+        }
+    }
+}
