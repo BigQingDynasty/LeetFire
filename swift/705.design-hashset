@@ -1,3 +1,4 @@
+// 方法一，根据给定的范围判断
 class MyHashSet {
 
     private var data: [Bool]
@@ -16,5 +17,79 @@ class MyHashSet {
     
     func contains(_ key: Int) -> Bool {
         data[key]
+    }
+}
+
+// 方法二，链表法
+class MyHashSet {
+    private let base: Int
+    private var buckets: [Bucket]
+
+    init() {
+        base = 3612 // 质数
+        buckets = [Bucket]()
+        for _ in 0 ..< base {
+            buckets.append(Bucket())
+        }
+    }
+
+    func add(_ key: Int) {
+        buckets[hash(key)].add(key)
+    }
+    
+    func remove(_ key: Int) {
+        buckets[hash(key)].remove(key)
+    }
+    
+    func contains(_ key: Int) -> Bool {
+        buckets[hash(key)].contains(key)
+    }
+    
+    private func hash(_ key: Int) -> Int {
+        key % base
+    }
+}
+
+class Bucket {
+    private let head = Node(0)
+
+    func add(_ val: Int) {
+        guard !contains(val) else { return }
+        let node = Node(val)
+        node.next = head.next
+        head.next = node
+    }
+
+    func remove(_ val: Int) {
+        var prev: Node? = head
+        var next = head.next
+        while next != nil {
+            if next?.val == val {
+                prev?.next = next?.next
+                return
+            }
+            prev = next
+            next = next?.next
+        }
+    }
+
+    func contains(_ val: Int) -> Bool {
+        var next = head.next
+        while next != nil {
+            if next?.val == val {
+                return true
+            }
+            next = next?.next
+        }
+        return false
+    }
+
+    class Node {
+        let val: Int
+        var next: Node?
+
+        init(_ val: Int) {
+            self.val = val
+        }
     }
 }
