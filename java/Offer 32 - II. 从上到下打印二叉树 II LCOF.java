@@ -10,8 +10,8 @@
  */
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
-            if (root == null) return null;
             List<List<Integer>> res = new ArrayList();
+            if (root == null) return res;
             LinkedList<TreeNode> stack = new LinkedList();
             stack.offer(root);
             while(!stack.isEmpty()) {
